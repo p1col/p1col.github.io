@@ -1,9 +1,3 @@
-# Vue 3 + TypeScript + Vite
+# Vue 3 + TypeScript 5 + Vite 5.2.0
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
-
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+Vite 5.2.0 暂时和 yarn 不适用，ts 报错找不到 vite，切换成 pnpm 就不报错了，原因未知。
