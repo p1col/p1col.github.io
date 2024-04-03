@@ -1,7 +1,8 @@
+import * as dd from 'dingtalk-jsapi';
 import * as ww from '@wecom/jssdk';
 import { isWxWork, isDingTalk, isFeishu } from '../utils/index';
 
-function apiAuth() {
+function feishuApi() {
   console.log('start apiAuth');
   // @ts-ignore
   if (!window.h5sdk) {
@@ -65,9 +66,26 @@ function apiAuth() {
     });
 }
 
+function ddApi() {
+  dd.scan({
+    type: 'qr',
+    // @ts-ignore
+    success: (res) => {
+      const { code } = res;
+      console.log('扫码内容', code);
+    },
+    fail: (err: any) => {
+      console.log('fail', err);
+    },
+    complete: (res: any) => {
+      console.log('complete', res);
+    },
+  });
+}
+
 export const loadSdk = () => {
   if (isFeishu()) {
-    apiAuth();
+    feishuApi();
   } else if (isWxWork()) {
     // @ts-ignore
     ww.scanQRCode({
@@ -83,16 +101,6 @@ export const loadSdk = () => {
       },
     });
   } else if (isDingTalk()) {
-    // @ts-ignore
-    dd.scan({
-      type: 'qr',
-      // @ts-ignore
-      success: (res) => {
-        const { code } = res;
-        console.log('扫码内容', code);
-      },
-      fail: () => {},
-      complete: () => {},
-    });
+    ddApi();
   }
 };
