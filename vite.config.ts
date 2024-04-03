@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import legacyPlugin from '@vitejs/plugin-legacy';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,5 +8,10 @@ export default defineConfig({
   build: {
     outDir: './build',
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    legacyPlugin({
+      modernPolyfills: true,
+    }),
+  ],
 });
