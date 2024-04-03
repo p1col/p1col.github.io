@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wecom/jssdk": "^1.4.5",
+    "dingtalk-jsapi": "^3.0.32",
     "vue": "^3.4.21",
     "vue-router": "4"
   },

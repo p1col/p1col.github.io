@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@wecom/jssdk':
+    specifier: ^1.4.5
+    version: 1.4.5
+  dingtalk-jsapi:
+    specifier: ^3.0.32
+    version: 3.0.32
   vue:
     specifier: ^3.4.21
     version: 3.4.21(typescript@5.4.3)
@@ -510,6 +516,10 @@ packages:
   /@vue/shared@3.4.21:
     resolution: {integrity: sha512-PuJe7vDIi6VYSinuEbUIQgMIRZGgM8e4R+G+/dQTk0X1NEdvgvvgv7m+rfmDH1gZzyA1OjjoWskvHlfRNfQf3g==}
 
+  /@wecom/jssdk@1.4.5:
+    resolution: {integrity: sha512-1SSmcDUid7QOQNNFaM4d884NXJQYuoO+oLZtM9TRO5uMXYj2s69hmuAoPUr3D3br6VDgv4H+tbIG5A5A+uB9lA==}
+    dev: false
+
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
@@ -530,6 +540,12 @@ packages:
   /de-indent@1.0.2:
     resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
     dev: true
+
+  /dingtalk-jsapi@3.0.32:
+    resolution: {integrity: sha512-TvB6xBGYjtIQahAK69VKlh0vrVU1uhedkMjPjQdOMabw5hrnCXpOZkGe2LqAkjZO/gh1LhmYE3WBxbwFJetDzg==}
+    dependencies:
+      promise-polyfill: 7.1.2
+    dev: false
 
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
@@ -625,6 +641,10 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.2.0
+
+  /promise-polyfill@7.1.2:
+    resolution: {integrity: sha512-FuEc12/eKqqoRYIGBrUptCBRhobL19PS2U31vMNTfyck1FxPyMfgsXyW4Mav85y/ZN1hop3hOwRlUDok23oYfQ==}
+    dev: false
 
   /rollup@4.13.2:
     resolution: {integrity: sha512-MIlLgsdMprDBXC+4hsPgzWUasLO9CE4zOkj/u6j+Z6j5A4zRY+CtiXAdJyPtgCsc42g658Aeh1DlrdVEJhsL2g==}
