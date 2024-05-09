@@ -67,7 +67,7 @@ function checkIsFocus(x: number, y: number) {
     <div
       v-for="option in options"
       class="keyboard__btn"
-      :class="{ 'is-exist': option.readonly }"
+      :class="{ 'keyboard__btn--disabled': option.readonly }"
       :key="`key-${option.val}`"
       @click="updateCell(option.readonly, option.val)"
       >{{ option.val }}</div
@@ -75,8 +75,6 @@ function checkIsFocus(x: number, y: number) {
   </div>
 </template>
 <style lang="scss" scoped>
-$mainColor: rgba(0, 0, 0, 0.85);
-
 @keyframes resetColor {
   100% {
     background-color: rgba(245, 151, 148, 0);
@@ -88,13 +86,13 @@ $mainColor: rgba(0, 0, 0, 0.85);
   flex-direction: column;
   align-items: center;
   margin-top: 24px;
-  color: $mainColor;
+  color: $fontColor;
 }
 .row {
   display: flex;
-  border-bottom: 1px dashed $mainColor;
+  border-bottom: 1px dashed $fontColor;
   &:first-of-type {
-    border-top: 1px solid $mainColor;
+    border-top: 1px solid $fontColor;
   }
   &:nth-of-type(3n) {
     border-bottom-style: solid;
@@ -106,19 +104,19 @@ $mainColor: rgba(0, 0, 0, 0.85);
   line-height: 35px;
   text-align: center;
   font-style: italic;
-  border-right: 1px dashed $mainColor;
+  border-right: 1px dashed $fontColor;
   &:first-child {
-    border-left: 1px solid $mainColor;
+    border-left: 1px solid $fontColor;
   }
   &:nth-of-type(3n) {
     border-right-style: solid;
   }
   &.cell--focus {
-    background-color: rgba(245, 151, 148, 0.6);
+    background-color: $focusColor;
     animation: resetColor 0.2s ease-in-out reverse backwards;
   }
   &[aria-checked='true'] {
-    background-color: rgba(245, 151, 148, 1);
+    background-color: $focusColorLight;
   }
   &.is-readonly {
     font-style: normal;
@@ -136,16 +134,13 @@ $mainColor: rgba(0, 0, 0, 0.85);
   height: 30px;
   line-height: 30px;
   text-align: center;
-  border: 1px solid $mainColor;
+  border: 1px solid $fontColor;
   border-right: none;
+  &.keyboard__btn--disabled {
+    color: $fontColorDisable;
+  }
   &:last-of-type {
-    border-right: 1px solid $mainColor;
+    border-right: 1px solid $fontColor;
   }
-  &:hover {
-    opacity: 0.8;
-  }
-}
-.is-exist {
-  color: lightgray;
 }
 </style>
