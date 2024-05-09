@@ -127,6 +127,7 @@ function checkIsFocus(x: number, y: number) {
   display: flex;
   justify-content: center;
   margin-top: 24px;
+  color: $fontColor;
 }
 .keyboard__btn {
   position: relative;
