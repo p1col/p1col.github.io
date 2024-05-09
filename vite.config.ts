@@ -13,6 +13,11 @@ export default defineConfig({
     alias: {},
   },
   css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "/src/theme/variables.scss" as *;',
+      },
+    },
     postcss: {
       plugins: [
         postcsspxtoviewport8plugin({
