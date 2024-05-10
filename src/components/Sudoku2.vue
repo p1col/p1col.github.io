@@ -62,7 +62,7 @@ function checkIsFocus(x: number, y: number) {
       </div>
     </div>
   </div>
-  <div v-if="showKeyboard" class="keyboard">
+  <div v-show="showKeyboard" class="keyboard">
     <div
       v-for="option in options"
       class="keyboard__btn"
