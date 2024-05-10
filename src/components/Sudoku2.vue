@@ -76,7 +76,7 @@ function checkIsFocus(x: number, y: number) {
 <style lang="scss" scoped>
 @keyframes resetColor {
   100% {
-    background-color: rgba(245, 151, 148, 0);
+    background: transparent;
   }
 }
 
@@ -112,11 +112,11 @@ function checkIsFocus(x: number, y: number) {
     border-right-style: solid;
   }
   &.cell--focus {
-    background-color: $focusColor;
+    background: $focusColor;
     animation: resetColor 0.2s ease-in-out reverse backwards;
   }
   &[aria-checked='true'] {
-    background-color: $focusColorLight;
+    background: $focusColorLight;
   }
   &.is-readonly {
     color: $fontColor;
@@ -135,7 +135,7 @@ function checkIsFocus(x: number, y: number) {
   height: 30px;
   line-height: 30px;
   text-align: center;
-  background-color: $backgroundColor;
+  background: $backgroundColor;
   box-shadow: 0 0 0 1px $fontColor;
 
   &.keyboard__btn--disabled {
