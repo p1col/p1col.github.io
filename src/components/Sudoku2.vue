@@ -86,6 +86,7 @@ function checkIsFocus(x: number, y: number) {
   align-items: center;
   margin-top: 24px;
   color: $fontColor;
+  transform: rotateZ(360deg);
 }
 .row {
   display: flex;
@@ -105,7 +106,6 @@ function checkIsFocus(x: number, y: number) {
   height: 35px;
   font-style: italic;
   border-right: 1px dashed $fontColor;
-  transform: rotateZ(360deg);
   &:first-child {
     border-left: 1px solid $fontColor;
   }
