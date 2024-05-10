@@ -28,7 +28,6 @@ const showKeyboard = computed(() => current.value.options);
 
 function updateCell(readonly: boolean, val: number) {
   if (!readonly) {
-    console.log(`当前选中${current.value.x}-${current.value.y}`);
     sudoku.updateTip(current.value.x, current.value.y, val);
   }
 }
@@ -137,11 +136,12 @@ function checkIsFocus(x: number, y: number) {
   text-align: center;
   border: 1px solid $fontColor;
   border-right: none;
-  &.keyboard__btn--disabled {
-    color: $fontColorDisable;
-  }
   &:last-of-type {
     border-right: 1px solid $fontColor;
+  }
+  &.keyboard__btn--disabled {
+    color: $fontColorDisable;
+    border-color: $fontColor;
   }
 }
 </style>
