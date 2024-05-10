@@ -58,7 +58,7 @@ function checkIsFocus(x: number, y: number) {
         :aria-checked="current.x === rowIndex && current.y === colIndex"
         @click="getCellIndex(infoMap[`${rowIndex}-${colIndex}`])"
       >
-        <div v-if="cell">{{ cell }}</div>
+        <div v-show="cell">{{ cell }}</div>
       </div>
     </div>
   </div>
@@ -98,10 +98,11 @@ function checkIsFocus(x: number, y: number) {
   }
 }
 .cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 35px;
   height: 35px;
-  line-height: 35px;
-  text-align: center;
   font-style: italic;
   border-right: 1px dashed $fontColor;
   &:first-child {
@@ -118,7 +119,7 @@ function checkIsFocus(x: number, y: number) {
     background-color: $focusColorLight;
   }
   &.is-readonly {
-    font-style: normal;
+    color: $fontColor;
     font-weight: bold;
   }
 }
@@ -136,7 +137,7 @@ function checkIsFocus(x: number, y: number) {
   text-align: center;
   background-color: $backgroundColor;
   box-shadow: 0 0 0 1px $fontColor;
-  
+
   &.keyboard__btn--disabled {
     color: $fontColorDisable;
   }
