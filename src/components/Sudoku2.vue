@@ -134,10 +134,9 @@ function checkIsFocus(x: number, y: number) {
   height: 30px;
   line-height: 30px;
   text-align: center;
-  border: 1px solid $fontColor;
-  &:not(:last-of-type) {
-    border-right: none;
-  }
+  background-color: $backgroundColor;
+  box-shadow: 0 0 0 1px $fontColor;
+  
   &.keyboard__btn--disabled {
     color: $fontColorDisable;
   }
