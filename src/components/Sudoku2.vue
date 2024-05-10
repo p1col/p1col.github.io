@@ -105,6 +105,7 @@ function checkIsFocus(x: number, y: number) {
   height: 35px;
   font-style: italic;
   border-right: 1px dashed $fontColor;
+  transform: rotateZ(360deg);
   &:first-child {
     border-left: 1px solid $fontColor;
   }
@@ -121,6 +122,7 @@ function checkIsFocus(x: number, y: number) {
   &.is-readonly {
     color: $fontColor;
     font-weight: bold;
+    font-style: normal;
   }
 }
 .keyboard {
