@@ -6,15 +6,20 @@ import { ref } from 'vue';
  * @property y 纵坐标
  * @property isMine 当前是地雷格
  * @property isFlag 当前已标记为地雷格
+ * @property isOpen 当前格已打开
  * @property mines 周围的雷的数量
+ * @property isExplode 当前格为触发的地雷格
  */
 type Mine = {
   x: number;
   y: number;
   isMine: boolean;
   isFlag: boolean;
+  isOpen: boolean;
   mines: number;
+  isExplode?: boolean;
 };
+let gameOver = ref(false);
 let config = ref({ x: 16, y: 16, mines: 10 });
 let minePosMap = new Set<string>();
 let mineMaps = ref<Mine[][]>([]);
@@ -103,6 +108,7 @@ function setMineMap() {
         y: j,
         isMine,
         isFlag: false,
+        isOpen: false,
         mines: updateMineCount(i, j, isMine),
       };
     }
@@ -125,12 +131,24 @@ function initGame() {
   setMineMap();
 }
 
+function onGameOver() {
+  mineMaps.value.forEach((row) => row.forEach((cell) => (cell.isOpen = true)));
+}
+
 /**
  * 打开当前单元格
  * @param cell 当前单元格信息
  */
 function openCell(cell: Mine) {
-  console.log('点击', cell);
+  if (cell.isFlag || cell.isOpen || gameOver.value) {
+    return;
+  }
+  cell.isOpen = true;
+  if (cell.isMine) {
+    gameOver.value = true;
+    cell.isExplode = true;
+    onGameOver();
+  }
 }
 
 /**
@@ -138,7 +156,11 @@ function openCell(cell: Mine) {
  * @param cell 当前单元格信息
  */
 function setFlag(cell: Mine) {
-  console.log('右键：', cell);
+  if (gameOver.value) {
+    return;
+  }
+  cell.isFlag = !cell.isFlag;
+  return false;
 }
 
 initGame();
@@ -146,22 +168,30 @@ initGame();
 <template>
   <div class="mine-config">
     <label for="row" class="mine-config__label">行：</label>
-    <input id="row" class="mine-config__input" v-model="config.x" />
+    <input id="row" class="mine-config__input" type="number" v-model="config.x" />
     <label for="col" class="mine-config__label">列：</label>
-    <input id="col" class="mine-config__input" v-model="config.y" />
+    <input id="col" class="mine-config__input" type="number" v-model="config.y" />
     <label for="count" class="mine-config__label">雷数量：</label>
-    <input id="count" class="mine-config__input" v-model="config.mines" />
+    <input id="count" class="mine-config__input" type="number" v-model="config.mines" />
     <button class="mine-config__btn" @click="initGame">Play</button>
   </div>
   <div class="mine-map">
-    <div v-for="(rows, rowIndex) in mineMaps" :key="`row-${rowIndex}`">
+    <div class="mine-row" v-for="(rows, rowIndex) in mineMaps" :key="`row-${rowIndex}`">
       <div
         v-for="(cell, colIndex) in rows"
         class="mine-cell"
-        :class="{ 'is-mine': cell.isMine }"
+        :class="[
+          `color-${cell.mines}`,
+          {
+            'is-mine': cell.isMine,
+            'mine-cell--flag': cell.isFlag,
+            'mine-cell--open': cell.isOpen,
+            'mine-cell--explode': cell.isExplode,
+          },
+        ]"
         :key="`cell-${rowIndex}-${colIndex}`"
         @click="openCell(cell)"
-        @contextmenu="setFlag(cell)"
+        @contextmenu.prevent="setFlag(cell)"
       >
         {{ cell.mines || '' }}
       </div>
@@ -169,6 +199,13 @@ initGame();
   </div>
 </template>
 <style lang="scss">
+$colorSet: #0301fa, #077d0c, #fb0500, #060980, #790000, #2a8080, #000000, #808080;
+@each $color in $colorSet {
+  $i: index($colorSet, $color);
+  .color-#{$i} {
+    color: $color;
+  }
+}
 .mine-config {
   display: flex;
   flex-direction: row;
@@ -185,20 +222,57 @@ initGame();
   }
 }
 .mine-map {
+  position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  padding-right: 2px;
+  align-items: center;
+  .mine-row {
+    display: flex;
+    flex-direction: row;
+
+    border-bottom: 1px solid #7f7f7f;
+    &:first-of-type {
+      border-top: 1px solid #7f7f7f;
+    }
+  }
   .mine-cell {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2px 0 0 2px;
     width: 20px;
     height: 20px;
-    border: 1px solid;
+    background: #bebebe;
+    border-right: 1px solid #7f7f7f;
+    &:first-of-type {
+      border-left: 1px solid #7f7f7f;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #c2c0c2;
+      border: 3px solid;
+      border-color: #fbfbfb #7f7f7f #7f7f7f #fbfbfb;
+    }
+  }
+  .mine-cell--open::after {
+    visibility: hidden;
+  }
+  .mine-cell--flag::after {
+    background: url(../assets/flag.svg) center / 80% no-repeat;
+  }
+  .mine-cell--explode::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent 49%, red 49%, red 51%, transparent 51%),
+      linear-gradient(135deg, transparent 49%, red 49%, red 51%, transparent 51%);
   }
   .is-mine {
-    background: $focusColor;
+    background: radial-gradient(#000 40%, #bebebe 42%, #bebebe);
   }
 }
 </style>
