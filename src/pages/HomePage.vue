@@ -10,6 +10,7 @@ function routerPush(path: string) {
 <template>
   <div class="entry-group">
     <button class="entry__btn" @click="routerPush('/sudoku')">sudoku</button>
+    <button class="entry__btn" @click="routerPush('/card')">card</button>
   </div>
 </template>
 <style lang="scss">

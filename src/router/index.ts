@@ -13,5 +13,10 @@ export const router = createRouter({
       name: 'Sudoku',
       component: () => import('../pages/SudokuGame.vue'),
     },
+    {
+      path: '/card',
+      name: 'Card',
+      component: () => import('../pages/CardGame.vue'),
+    },
   ],
 });
