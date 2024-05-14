@@ -18,5 +18,10 @@ export const router = createRouter({
       name: 'Card',
       component: () => import('../pages/CardGame.vue'),
     },
+    {
+      path: '/mine-sweeper',
+      name: 'MineSweeper',
+      component: () => import('../pages/MineSweeper.vue'),
+    },
   ],
 });
