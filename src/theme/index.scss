@@ -9,12 +9,32 @@
 }
 button {
   width: 60%;
+  margin: auto;
   padding: 10px;
   color: $fontColor;
+  background: #fff;
   border: none;
   border-radius: 9999px;
-  box-shadow: 1px 1px 0 0 $focusColor;
+  box-shadow: inset -1px -2px 0 0 $fontColor;
+  &:focus {
+    outline: none;
+    color: $focusColorLight;
+    box-shadow: inset -1px -2px 0 0 $focusColor;
+  }
   &:active {
     opacity: 0.6;
+    color: $focusColorLight;
+    box-shadow: inset -1px -2px 0 0 $focusColor;
+  }
+}
+
+input {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: inset 0 -1px 0 0 $fontColor;
+  &:focus {
+    outline: none;
+    box-shadow: inset -1px -2px 0 0 $focusColor;
   }
 }
