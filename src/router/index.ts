@@ -6,6 +6,11 @@ export const router = createRouter({
     {
       path: '/',
       name: '',
+      component: () => import('../pages/HomePage.vue'),
+    },
+    {
+      path: '/sudoku',
+      name: 'Sudoku',
       component: () => import('../pages/SudokuGame.vue'),
     },
   ],
