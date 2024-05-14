@@ -53,4 +53,8 @@ export default defineConfig({
       modernPolyfills: true,
     }),
   ],
+  server: {
+    host: '0.0.0.0', // 设置服务器监听的IP地址
+    port: 3000, // 设置服务器监听的端口
+  },
 });
