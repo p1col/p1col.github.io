@@ -1,0 +1,1 @@
+import{d as n,c as r,a as u,u as a,o as c}from"./index-BOhr5iJ9.js";const _={class:"entry-group"},l=n({__name:"HomePage",setup(p){const t=a();function s(e){t.push(e)}return(e,o)=>(c(),r("div",_,[u("button",{class:"entry__btn",onClick:o[0]||(o[0]=d=>s("/sudoku"))},"sudoku")]))}});export{l as default};
