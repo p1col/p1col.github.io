@@ -146,12 +146,16 @@ type Position = {
 };
 // 搜查队列
 let queue: Position[] = [];
-// 搜查方向：上，右，下，左
+// 搜查方向：上，右上，右，右下，下，左下，左，左上
 const dirs = [
   [-1, 0],
+  [-1, 1],
   [0, 1],
+  [1, 1],
   [1, 0],
+  [1, -1],
   [0, -1],
+  [-1, -1],
 ];
 
 /**
@@ -173,7 +177,7 @@ function expandBlank(x: number, y: number) {
     // 判断当前格是否是空白格
     if (mineMaps.value[fx][fy].mines === 0) {
       // 是空白格就往四周探索
-      // 遍历方向，顺序为上右下左
+      // 遍历方向，顺序为上，右上，右，右下，下，左下，左，左上
       for (const dir of dirs) {
         // 计算当前探索的格子坐标
         let curX = fx + dir[0];
