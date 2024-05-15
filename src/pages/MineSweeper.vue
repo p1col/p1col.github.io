@@ -10,6 +10,7 @@ import { ref, computed } from 'vue';
  * @property isOpen 当前格已打开
  * @property mines 周围的雷的数量
  * @property isExplode 当前格为触发的地雷格
+ * @property isVisit 空白格拓展时标记当前格已被访问过
  */
 type Mine = {
   x: number;
@@ -19,9 +20,11 @@ type Mine = {
   isOpen: boolean;
   mines: number;
   isExplode?: boolean;
+  isVisit?: boolean;
 };
 let gameOver = ref(false);
 let config = ref({ x: 16, y: 16, mines: 10 });
+let maxMines = computed(() => config.value.x * config.value.y);
 let minePosMap = new Set<string>();
 let mineMaps = ref<Mine[][]>([]);
 
@@ -137,6 +140,64 @@ function onGameOver() {
   mineMaps.value.forEach((row) => row.forEach((cell) => (cell.isOpen = true)));
 }
 
+type Position = {
+  x: number;
+  y: number;
+};
+// 搜查队列
+let queue: Position[] = [];
+// 搜查方向：上，右，下，左
+const dirs = [
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+  [0, -1],
+];
+
+/**
+ * 打开相邻的空白格及邻接的数字格
+ * @param x 当前格横坐标
+ * @param y 当前格纵坐标
+ */
+function expandBlank(x: number, y: number) {
+  // 初始化队列
+  queue.push({ x, y });
+  while (queue.length > 0) {
+    // 获取队列第一个元素的坐标
+    const { x: fx, y: fy } = queue[0];
+    // 修改当前格子状态，并出队
+    mineMaps.value[fx][fy].isOpen = true;
+    mineMaps.value[fx][fy].isVisit = true;
+    queue.shift();
+
+    // 判断当前格是否是空白格
+    if (mineMaps.value[fx][fy].mines === 0) {
+      // 是空白格就往四周探索
+      // 遍历方向，顺序为上右下左
+      for (const dir of dirs) {
+        // 计算当前探索的格子坐标
+        let curX = fx + dir[0];
+        let curY = fy + dir[1];
+        // 判断当前坐标是否越界，是否可访问
+        const isInRange = curX >= 0 && curX < config.value.x && curY >= 0 && curY < config.value.y;
+        // 判断当前格子是否可访问
+        const isVisitable = isInRange
+          ? !(
+              mineMaps.value[curX][curY].isOpen ||
+              mineMaps.value[curX][curY].isVisit ||
+              mineMaps.value[curX][curY].isFlag
+            )
+          : false;
+        if (isVisitable) {
+          // 将可访问的格子入队，并且标记为已访问
+          mineMaps.value[curX][curY].isVisit = true;
+          queue.push({ x: curX, y: curY });
+        }
+      }
+    }
+  }
+}
+
 /**
  * 打开当前单元格
  * @param cell 当前单元格信息
@@ -147,9 +208,13 @@ function openCell(cell: Mine) {
   }
   cell.isOpen = true;
   if (cell.isMine) {
+    // 当打开的格子是地雷格时游戏结束
     gameOver.value = true;
     cell.isExplode = true;
     onGameOver();
+  } else if (cell.mines === 0) {
+    // 当打开的是空白格是拓展空白区域
+    expandBlank(cell.x, cell.y);
   }
 }
 
@@ -198,7 +263,6 @@ initGame();
           },
         ]"
         :key="`cell-${rowIndex}-${colIndex}`"
-        @click="openCell(cell)"
         @click.left="openCell(cell)"
         @contextmenu.prevent="setFlag(cell)"
       >
