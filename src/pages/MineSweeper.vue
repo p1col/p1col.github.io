@@ -23,7 +23,6 @@ type Mine = {
   isVisit?: boolean;
 };
 let gameOver = ref(false);
-let config = ref({ x: 16, y: 16, mines: 10 });
 let maxMines = computed(() => config.value.x * config.value.y);
 let minePosMap = new Set<string>();
 let mineMaps = ref<Mine[][]>([]);
