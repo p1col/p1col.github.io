@@ -129,6 +129,7 @@ function initGame() {
   }
   getRandomMine(config.value.mines);
   setMineMap();
+  gameOver.value = false;
 }
 
 function onGameOver() {
@@ -262,7 +263,7 @@ $colorSet: #0301fa, #077d0c, #fb0500, #060980, #790000, #2a8080, #000000, #80808
     visibility: hidden;
   }
   .mine-cell--flag::after {
-    background: url(../assets/flag.svg) center / 80% no-repeat;
+    background: url(../assets/flag.svg) center / 80% no-repeat, #bebebe;
   }
   .mine-cell--explode::before {
     content: '';
