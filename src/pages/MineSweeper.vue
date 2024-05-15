@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
 /**
  * 单元格信息
  * @property x 横坐标
@@ -173,7 +174,13 @@ initGame();
     <label for="col" class="mine-config__label">列：</label>
     <input id="col" class="mine-config__input" type="number" v-model="config.y" />
     <label for="count" class="mine-config__label">雷数量：</label>
-    <input id="count" class="mine-config__input" type="number" v-model="config.mines" />
+    <input
+      id="count"
+      type="number"
+      class="mine-config__input"
+      v-model="config.mines"
+      :max="maxMines"
+    />
     <button class="mine-config__btn" @click="initGame">Play</button>
   </div>
   <div class="mine-map">
@@ -192,6 +199,7 @@ initGame();
         ]"
         :key="`cell-${rowIndex}-${colIndex}`"
         @click="openCell(cell)"
+        @click.left="openCell(cell)"
         @contextmenu.prevent="setFlag(cell)"
       >
         {{ cell.mines || '' }}
