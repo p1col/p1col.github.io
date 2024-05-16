@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 /**
  * 单元格信息
@@ -23,10 +23,15 @@ type Mine = {
   isVisit?: boolean;
 };
 let gameOver = ref(false);
-let config = ref({ x: 16, y: 16, mines: 20 });
+let config = ref({ x: 16, y: 16, mines: 40 });
 let maxMines = computed(() => config.value.x * config.value.y);
 let minePosMap = new Set<string>();
 let mineMaps = ref<Mine[][]>([]);
+// 剩余的标记数
+let remainFlags = ref(config.value.mines);
+let unOpenCells = ref(config.value.x * config.value.y);
+// 不是 gameOver 状态，剩余的标记数为 0，或者未打开的格子数量与雷数相等
+let complete = computed(() => !gameOver.value && unOpenCells.value === config.value.mines);
 
 /**
  * 获取随机数 [0, max-1]
@@ -132,14 +137,31 @@ function initGame() {
   if (minePosMap.size > 0) {
     minePosMap.clear();
   }
+  remainFlags.value = config.value.mines;
+  unOpenCells.value = config.value.x * config.value.y;
   getRandomMine(config.value.mines);
   setMineMap();
   gameOver.value = false;
 }
 
+// 游戏结束，打开全图
 function onGameOver() {
   mineMaps.value.forEach((row) => row.forEach((cell) => (cell.isOpen = true)));
 }
+
+// 通关时标记剩余的格子
+watch(
+  () => complete.value,
+  (newVal) => {
+    // 通关时如果剩余标记数不为 0, 自动标记地雷位置
+    if (newVal && remainFlags.value > 0) {
+      for (const position of minePosMap) {
+        const [x, y] = position.split('-');
+        mineMaps.value[+x][+y].isFlag = true;
+      }
+    }
+  }
+);
 
 type Position = {
   x: number;
@@ -172,6 +194,8 @@ function expandBlank(x: number, y: number) {
     const { x: fx, y: fy } = queue[0];
     // 修改当前格子状态，并出队
     mineMaps.value[fx][fy].isOpen = true;
+    // 未打开格子数减 1
+    unOpenCells.value--;
     mineMaps.value[fx][fy].isVisit = true;
     queue.shift();
 
@@ -208,7 +232,7 @@ function expandBlank(x: number, y: number) {
  * @param cell 当前单元格信息
  */
 function openCell(cell: Mine) {
-  if (cell.isFlag || cell.isOpen || gameOver.value) {
+  if (cell.isFlag || cell.isOpen || gameOver.value || complete.value) {
     return;
   }
   cell.isOpen = true;
@@ -220,6 +244,9 @@ function openCell(cell: Mine) {
   } else if (cell.mines === 0) {
     // 当打开的是空白格是拓展空白区域
     expandBlank(cell.x, cell.y);
+  } else {
+    // 数字格，剩余格子数减 1
+    unOpenCells.value--;
   }
 }
 
@@ -228,10 +255,12 @@ function openCell(cell: Mine) {
  * @param cell 当前单元格信息
  */
 function setFlag(cell: Mine) {
-  if (gameOver.value) {
+  if (gameOver.value || complete.value) {
     return;
   }
   cell.isFlag = !cell.isFlag;
+  // 旗帜状态变更后需要同步剩余数量
+  remainFlags.value += cell.isFlag ? -1 : 1;
   return false;
 }
 
@@ -253,6 +282,7 @@ initGame();
     />
     <button class="mine-config__btn" @click="initGame">Play</button>
   </div>
+  <div class="game-status">{{ complete ? 'ψ(｀∇´)ψ 通关！' : `ψ(._. )> 剩余标记数：${remainFlags}` }}</div>
   <div class="mine-map">
     <div class="mine-row" v-for="(rows, rowIndex) in mineMaps" :key="`row-${rowIndex}`">
       <div
@@ -288,7 +318,9 @@ $colorSet: #0301fa, #077d0c, #fb0500, #060980, #790000, #2a8080, #000000, #80808
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 20px;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 10px;
   .mine-config__label {
     padding-left: 10px;
   }
@@ -299,12 +331,16 @@ $colorSet: #0301fa, #077d0c, #fb0500, #060980, #790000, #2a8080, #000000, #80808
     margin-top: 10px;
   }
 }
+.game-status {
+  text-align: center;
+}
 .mine-map {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 5px;
   .mine-row {
     display: flex;
     flex-direction: row;
