@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 
-import { isWxWork, isDingTalk, isFeishu } from '../assets/js/utils/index';
-import { feishuApi } from '../assets/js/utils/loadSdk';
+import { isWxWork, isDingTalk, isFeishu } from '../utils/index';
+import { feishuApi } from '../utils/loadSdk';
 
 const curEnv = computed(() =>
   isFeishu() ? '飞书' : isWxWork() ? '企业微信' : isDingTalk() ? '钉钉' : '其他'
@@ -38,10 +38,13 @@ onMounted(async () => {
 <style scoped>
 .scan-test-page {
   padding: 32px;
-  background-color: rgba(218, 138, 139, 0.1);
+  color: #bd34fe;
+  color: linear-gradient(-45deg, #bd34fe 30%, #ffa64d 50%,#47caff 70%);
+  background: rgba(218, 138, 139, 0.1);
   /* box-shadow: rgba(218, 138, 139, 1) 0px 0px 0px 8.94553px; */
   box-shadow: -5px 5px 0 rgba(218, 138, 139, 0.4), -10px 10px 0 rgba(218, 138, 139, 0.3),
     -15px 15px 0 rgba(218, 138, 139, 0.2), -20px 20px 0 rgba(218, 138, 139, 0.1),
     -25px 25px 0 rgba(218, 138, 139, 0.05), 0 0 0 currentColor;
 }
 </style>
+../utils/index../utils/loadSdk

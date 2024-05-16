@@ -1,6 +1,6 @@
 import * as dd from 'dingtalk-jsapi';
 import * as ww from '@wecom/jssdk';
-import { isWxWork, isDingTalk, isFeishu, loadScript } from '../utils/index';
+import { isWxWork, isDingTalk, isFeishu, loadScript } from './index';
 
 let isloaded = false;
 
