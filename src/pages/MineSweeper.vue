@@ -182,6 +182,14 @@ const dirs = [
 ];
 
 /**
+ * 检查当前坐标是否在二维数组范围内
+ * @param x 横坐标
+ * @param y 纵坐标
+ */
+const isInRange = (x: number, y: number) =>
+  x >= 0 && x < config.value.x && y >= 0 && y < config.value.y;
+
+/**
  * 打开相邻的空白格及邻接的数字格
  * @param x 当前格横坐标
  * @param y 当前格纵坐标
@@ -208,9 +216,9 @@ function expandBlank(x: number, y: number) {
         let curX = fx + dir[0];
         let curY = fy + dir[1];
         // 判断当前坐标是否越界，是否可访问
-        const isInRange = curX >= 0 && curX < config.value.x && curY >= 0 && curY < config.value.y;
+        const inRange = isInRange(curX, curY);
         // 判断当前格子是否可访问
-        const isVisitable = isInRange
+        const isVisitable = inRange
           ? !(
               mineMaps.value[curX][curY].isOpen ||
               mineMaps.value[curX][curY].isVisit ||
@@ -232,21 +240,52 @@ function expandBlank(x: number, y: number) {
  * @param cell 当前单元格信息
  */
 function openCell(cell: Mine) {
-  if (cell.isFlag || cell.isOpen || gameOver.value || complete.value) {
+  if (cell.isFlag || (cell.isOpen && cell.mines === 0) || gameOver.value || complete.value) {
     return;
   }
-  cell.isOpen = true;
-  if (cell.isMine) {
-    // 当打开的格子是地雷格时游戏结束
-    gameOver.value = true;
-    cell.isExplode = true;
-    onGameOver();
-  } else if (cell.mines === 0) {
-    // 当打开的是空白格是拓展空白区域
-    expandBlank(cell.x, cell.y);
+  if (cell.isOpen) {
+    // 点击数字格时判断是否可以快速开格
+    quickOpen(cell);
   } else {
-    // 数字格，剩余格子数减 1
-    unOpenCells.value--;
+    cell.isOpen = true;
+    if (cell.isMine) {
+      // 当打开的格子是地雷格时游戏结束
+      gameOver.value = true;
+      cell.isExplode = true;
+      onGameOver();
+    } else if (cell.mines === 0) {
+      // 当打开的是空白格是拓展空白区域
+      expandBlank(cell.x, cell.y);
+    } else {
+      // 数字格，剩余格子数减 1
+      unOpenCells.value--;
+    }
+  }
+}
+
+function quickOpen(cell: Mine) {
+  const quickQueue: Position[] = [];
+  let flag = 0;
+  for (const dir of dirs) {
+    // 计算当前探索的格子坐标
+    let curX = cell.x + dir[0];
+    let curY = cell.y + dir[1];
+    // 判断当前坐标是否越界，是否已标记
+    const inRange = isInRange(curX, curY);
+    if (inRange) {
+      if (mineMaps.value[curX][curY].isFlag) {
+        flag++;
+      } else if (!mineMaps.value[curX][curY].isOpen) {
+        quickQueue.push({ x: curX, y: curY });
+      }
+    }
+  }
+  // 当前范围内标记数与当前格的数字相同时打开周围的格子
+  if (flag === cell.mines) {
+    while (quickQueue.length > 0) {
+      const { x, y } = quickQueue.shift() || ({} as Position);
+      openCell(mineMaps.value[x][y]);
+    }
   }
 }
 
@@ -282,7 +321,9 @@ initGame();
     />
     <button class="mine-config__btn" @click="initGame">Play</button>
   </div>
-  <div class="game-status">{{ complete ? 'ψ(｀∇´)ψ 通关！' : `ψ(._. )> 剩余标记数：${remainFlags}` }}</div>
+  <div class="game-status">
+    {{ complete ? 'ψ(｀∇´)ψ 通关！' : `ψ(._. )> 剩余标记数：${remainFlags}` }}
+  </div>
   <div class="mine-map">
     <div class="mine-row" v-for="(rows, rowIndex) in mineMaps" :key="`row-${rowIndex}`">
       <div
