@@ -1,0 +1,1 @@
+import{d as e,c as o,o as a}from"./index-ySh8VXTW.js";import{_ as c}from"./_plugin-vue_export-helper-DlAUqK2U.js";const t={class:"demo-bg-page"},n=e({name:"Background",__name:"BackgroundPage",setup(s){return(r,_)=>(a(),o("div",t))}}),m=c(n,[["__scopeId","data-v-41b77bb4"]]);export{m as default};
