@@ -40,6 +40,7 @@ const getRandomIndex = (max: number) => Math.floor(Math.random() * max);
  * @returns 九宫格对应的的最小的行下标或者列下标
  */
 const getMinEdge = (index: number) => (index - 1 < 0 ? index : index - 1);
+
 /**
  * 计算当前行或者列下标所在九宫格对应的的最大的行下标或者列下标
  * @param index 当前行或列下标
