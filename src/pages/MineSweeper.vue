@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 
 /**
- * 单元格信息
+ * @type Position 坐标信息
+ * @property x 横坐标
+ * @property y 纵坐标
+ */
+type Position = {
+  x: number;
+  y: number;
+};
+
+/**
+ * @type Mine 单元格信息
  * @property x 横坐标
  * @property y 纵坐标
  * @property isMine 当前是地雷格
@@ -12,9 +22,7 @@ import { ref, computed, watch } from 'vue';
  * @property isExplode 当前格为触发的地雷格
  * @property isVisit 空白格拓展时标记当前格已被访问过
  */
-type Mine = {
-  x: number;
-  y: number;
+type Mine = Position & {
   isMine: boolean;
   isFlag: boolean;
   isOpen: boolean;
@@ -22,6 +30,7 @@ type Mine = {
   isExplode?: boolean;
   isVisit?: boolean;
 };
+
 let gameOver = ref(false);
 let config = ref({ x: 16, y: 16, mines: 40 });
 let maxMines = computed(() => config.value.x * config.value.y);
@@ -163,10 +172,6 @@ watch(
   }
 );
 
-type Position = {
-  x: number;
-  y: number;
-};
 // 搜查队列
 let queue: Position[] = [];
 // 搜查方向：上，右上，右，右下，下，左下，左，左上
@@ -303,7 +308,9 @@ function setFlag(cell: Mine) {
   return false;
 }
 
-initGame();
+onMounted(() => {
+  initGame();
+});
 </script>
 <template>
   <div class="mine-config">
