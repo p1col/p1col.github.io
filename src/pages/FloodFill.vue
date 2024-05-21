@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 // 计数器
 let floodIndex = 0;
@@ -10,7 +10,9 @@ let queue = new Set<string>();
  * @property {number} x 行
  * @property {number} y 列
  */
-let edge = { x: 16, y: 16 };
+let edge = { x: 18, y: 14 };
+let maxX = computed(() => edge.x);
+let maxY = computed(() => edge.y);
 
 /**
  * 生成示意矩阵
@@ -32,7 +34,7 @@ const getMatrix = (x: number, y: number): number[][] => {
   return q;
 };
 
-const matrix = ref<number[][]>(getMatrix(edge.x, edge.y));
+const matrix = ref<number[][]>([]);
 
 // 坐标差值，顺序为：上-右上-右-右下-下-左下-左-左上
 const dirs = [
@@ -85,34 +87,52 @@ function start(x: number, y: number) {
   }
   floodFill(x, y);
 }
+
+onMounted(() => {
+  matrix.value = getMatrix(edge.x, edge.y);
+});
 </script>
 <template>
-  <div v-for="(row, rowIndex) in matrix" class="row">
-    <div
-      v-for="(cell, colIndex) in row"
-      class="cell"
-      :class="{ 'cell-start': cell === 1 }"
-      @click="start(rowIndex, colIndex)"
-    >
-      {{ cell }}
-    </div>
+  <div class="grid-title">点击任意格子查看遍历顺序</div>
+  <div class="grid">
+    <template v-for="(row, rowIndex) in matrix" :key="`row-${rowIndex}`">
+      <div
+        v-for="(cell, colIndex) in row"
+        class="cell"
+        :key="`cell-${rowIndex}-${colIndex}`"
+        :class="{ 'number-start': cell === 1 }"
+        @click="start(rowIndex, colIndex)"
+      >
+        {{ cell || '' }}
+      </div>
+    </template>
   </div>
 </template>
 <style lang="scss" scoped>
-.row {
-  display: flex;
-  flex-direction: row;
-  .cell {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-    border: 1px solid;
-    &.cell-start {
-      background: $focusColor;
-    }
+$maxRow: v-bind(maxX);
+$maxCol: v-bind(maxY);
+
+.grid-title {
+  padding: 10px;
+}
+.grid {
+  display: grid;
+  grid: repeat($maxRow, 1fr) / repeat($maxCol, 1fr);
+  margin-top: 6px;
+  font-size: 12px;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+}
+.cell {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  aspect-ratio: 1;
+  padding: 2px;
+  border-left: 1px solid;
+  border-top: 1px solid;
+  &.number-start {
+    background: $focusColor;
   }
 }
 </style>
