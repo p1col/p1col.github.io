@@ -12,6 +12,7 @@ function routerPush(path: string) {
     <button class="entry__btn" @click="routerPush('/sudoku')">sudoku</button>
     <button class="entry__btn" @click="routerPush('/card')">card</button>
     <button class="entry__btn" @click="routerPush('/mine-sweeper')">mine-sweeper</button>
+    <button class="entry__btn" @click="routerPush('/flood-fill')">flood-fill</button>
   </div>
 </template>
 <style lang="scss">

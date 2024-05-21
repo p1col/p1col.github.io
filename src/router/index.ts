@@ -23,5 +23,10 @@ export const router = createRouter({
       name: 'MineSweeper',
       component: () => import('../pages/MineSweeper.vue'),
     },
+    {
+      path: '/flood-fill',
+      name: 'FloodFill',
+      component: () => import('../pages/FloodFill.vue'),
+    },
   ],
 });
