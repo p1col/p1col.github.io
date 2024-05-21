@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 defineOptions({ name: 'CardGame' });
 
@@ -109,7 +109,9 @@ function start() {
   getRandomGame(getRandomIndex(10));
 }
 
-start();
+onMounted(() => {
+  start();
+});
 </script>
 
 <template>
