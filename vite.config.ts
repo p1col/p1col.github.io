@@ -3,11 +3,29 @@ import vue from '@vitejs/plugin-vue';
 import legacyPlugin from '@vitejs/plugin-legacy';
 import postcsspxtoviewport8plugin from 'postcss-px-to-viewport-8-plugin';
 
+const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g;
+const DRIVE_LETTER_REGEX = /^[a-z]:/i;
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
   build: {
     outDir: './build',
+    rollupOptions: {
+      output: {
+        /**
+         * 处理 _plugin-vue_export-helper 404 Not Found 问题
+         * https://github.com/rollup/rollup/blob/master/src/utils/sanitizeFileName.ts
+         * https://github.com/vitejs/vite/issues/9119
+         * @param fileName 文件名
+         * @returns 合法化的文件名
+         */
+        sanitizeFileName(fileName) {
+          const match = DRIVE_LETTER_REGEX.exec(fileName);
+          const driveLetter = match ? match[0] : '';
+          return driveLetter + fileName.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '');
+        },
+      },
+    },
   },
   resolve: {
     alias: {},
